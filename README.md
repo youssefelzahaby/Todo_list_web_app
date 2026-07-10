@@ -73,10 +73,5 @@ Each authenticated user has access only to their own tasks.
 This project was initially developed to practice **Full-Stack Web Development** by integrating a responsive frontend with a secure RESTful backend using **Django REST Framework** and **JWT Authentication**.
 
 It also serves as a foundation for applying modern **DevOps** practices. The next phase of the project focuses on containerization, CI/CD, Kubernetes, Infrastructure as Code, and deploying the application to **AWS** to simulate a real-world production environment.
-## 📷 Preview
-
-You can add screenshots of the application here.
-
----
 
 **Made with ❤️ by Yousef Elzahaby**
