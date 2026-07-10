@@ -57,12 +57,6 @@ The project uses Django's built-in **User** model for authentication and user ma
 
 Each authenticated user has access only to their own tasks.
 
-## ✅ Task Model
-
-Each task includes:
-
-- Title
-- Associated User
 
 ## 🔧 API Endpoints
 
