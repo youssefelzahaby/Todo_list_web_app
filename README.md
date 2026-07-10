@@ -66,7 +66,6 @@ Each authenticated user has access only to their own tasks.
 - Retrieve User Tasks
 - Delete Task
 
-## 🎯 Project Goal
 
 ## 🎯 Project Goal
 
