@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/*.tfplan
+
+# Sensitive Terraform files
+terraform/*.tfvars
