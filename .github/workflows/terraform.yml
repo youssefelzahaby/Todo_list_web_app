@@ -1,3 +1,4 @@
+
 name: Terraform Infrastructure
 
 on:
@@ -41,6 +42,13 @@ jobs:
         working-directory: ./terraform
         run: terraform apply -auto-approve tfplan
 
+      - name: Get Terraform Outputs
+        working-directory: ./terraform
+        run: |
+          echo "frontend_bucket=$(terraform output -raw frontend_bucket_name)" >> "$GITHUB_OUTPUT"
+          echo "backend_url=$(terraform output -raw alb_dns_name)" >> "$GITHUB_OUTPUT"
+          echo "ecr_repository=$(terraform output -raw ecr_repository_url)" >> "$GITHUB_OUTPUT"
+
       - name: Update Application Environment Variables
         working-directory: ./terraform
         env:
@@ -56,24 +64,24 @@ jobs:
             --method PUT \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2026-03-10" \
-            "/repos/${{ github.repository }}/environments/application/variables/FRONTEND_BUCKET" \
-            -f name="FRONTEND_BUCKET" \
+            "/repos/${{ github.repository }}/environments/application/variables/frontend_bucket" \
+            -f name="frontend_bucket" \
             -f value="$FRONTEND_BUCKET"
 
           gh api \
             --method PUT \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2026-03-10" \
-            "/repos/${{ github.repository }}/environments/application/variables/BACKEND_URL" \
-            -f name="BACKEND_URL" \
+            "/repos/${{ github.repository }}/environments/application/variables/backend_url" \
+            -f name="backend_url" \
             -f value="$BACKEND_URL"
 
           gh api \
             --method PUT \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2026-03-10" \
-            "/repos/${{ github.repository }}/environments/application/variables/ECR_REPOSITORY" \
-            -f name="ECR_REPOSITORY" \
+            "/repos/${{ github.repository }}/environments/application/variables/ecr_repository" \
+            -f name="ecr_repository" \
             -f value="$ECR_REPOSITORY"
 
           echo "Application environment variables updated successfully."
