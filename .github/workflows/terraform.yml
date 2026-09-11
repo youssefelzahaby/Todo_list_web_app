@@ -1,4 +1,3 @@
-```yaml
 name: Terraform Infrastructure
 
 on:
@@ -78,4 +77,4 @@ jobs:
             -f value="$ECR_REPOSITORY"
 
           echo "Application environment variables updated successfully."
-```
+
