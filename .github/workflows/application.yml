@@ -1,0 +1,33 @@
+name: Application Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: application
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.aws_account_id }}:role/TodoApplicationGitHubActionsRole
+          aws-region: ${{ vars.aws_region }}
+
+      - name: Generate config.js
+        run: |
+          echo "const API_URL = '${{ vars.backend_url }}';" > frontend/config.js
+
+      - name: Deploy frontend to S3
+        run: |
+          aws s3 sync frontend/ s3://${{ vars.frontend_bucket }}/ --delete
