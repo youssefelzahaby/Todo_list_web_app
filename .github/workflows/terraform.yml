@@ -14,38 +14,31 @@ jobs:
 
     steps:
 
-     
       - name: Checkout code
         uses: actions/checkout@v4
 
-    
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ vars.aws_account_id }}:role/TodoTerraformGitHubActionsRole
           aws-region: ${{ vars.aws_region }}
 
-   
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-     
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init
 
-      
       - name: Terraform Validate
         working-directory: ./terraform
         run: terraform validate
 
-   
       - name: Terraform Plan
         working-directory: ./terraform
         run: terraform plan -out=tfplan
 
-     
-            - name: Terraform Apply
+      - name: Terraform Apply
         working-directory: ./terraform
         run: terraform apply -auto-approve tfplan
 
@@ -89,7 +82,6 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/environments/application/variables/frontend_bucket" \
             -d "{\"name\":\"frontend_bucket\",\"value\":\"$FRONTEND_BUCKET\"}"
 
-
           echo "Updating backend_url..."
 
           curl --fail-with-body \
@@ -100,7 +92,6 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/environments/application/variables/backend_url" \
             -d "{\"name\":\"backend_url\",\"value\":\"$BACKEND_URL\"}"
 
-
           echo "Updating ecr_repository..."
 
           curl --fail-with-body \
@@ -110,7 +101,6 @@ jobs:
             -H "X-GitHub-Api-Version: 2026-03-10" \
             "https://api.github.com/repos/${{ github.repository }}/environments/application/variables/ecr_repository" \
             -d "{\"name\":\"ecr_repository\",\"value\":\"$ECR_REPOSITORY\"}"
-
 
           echo ""
           echo "========================================"
