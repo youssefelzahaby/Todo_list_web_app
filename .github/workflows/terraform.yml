@@ -52,7 +52,7 @@ jobs:
 
       - name: Update Application Variables
         env:
-          GH_TOKEN: ${{ secrets.GITHUP_ENV_TOKEN }}
+          GH_TOKEN: ${{ secrets.env_token }}
           FRONTEND_BUCKET: ${{ steps.terraform_outputs.outputs.frontend_bucket }}
           BACKEND_URL: ${{ steps.terraform_outputs.outputs.backend_url }}
           ECR_REPOSITORY: ${{ steps.terraform_outputs.outputs.ecr_repository }}
