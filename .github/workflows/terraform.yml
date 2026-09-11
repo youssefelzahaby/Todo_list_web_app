@@ -60,29 +60,38 @@ jobs:
 
           echo "Updating application environment variables..."
 
-          gh api \
-            --method PATCH \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2026-03-10" \
-            "/repos/${{ github.repository }}/environments/application/variables/frontend_bucket" \
-            -f name="frontend_bucket" \
-            -f value="$FRONTEND_BUCKET"
+          update_or_create_variable() {
+            NAME=$1
+            VALUE=$2
 
-          gh api \
-            --method PATCH \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2026-03-10" \
-            "/repos/${{ github.repository }}/environments/application/variables/backend_url" \
-            -f name="backend_url" \
-            -f value="$BACKEND_URL"
+            if gh api \
+              --method PATCH \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2026-03-10" \
+              "/repos/${{ github.repository }}/environments/application/variables/$NAME" \
+              -f name="$NAME" \
+              -f value="$VALUE"; then
 
-          gh api \
-            --method PATCH \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2026-03-10" \
-            "/repos/${{ github.repository }}/environments/application/variables/ecr_repository" \
-            -f name="ecr_repository" \
-            -f value="$ECR_REPOSITORY"
+              echo "$NAME updated successfully."
+
+            else
+
+              echo "$NAME does not exist. Creating it..."
+
+              gh api \
+                --method POST \
+                -H "Accept: application/vnd.github+json" \
+                -H "X-GitHub-Api-Version: 2026-03-10" \
+                "/repos/${{ github.repository }}/environments/application/variables" \
+                -f name="$NAME" \
+                -f value="$VALUE"
+
+              echo "$NAME created successfully."
+            fi
+          }
+
+          update_or_create_variable "frontend_bucket" "$FRONTEND_BUCKET"
+          update_or_create_variable "backend_url" "$BACKEND_URL"
+          update_or_create_variable "ecr_repository" "$ECR_REPOSITORY"
 
           echo "Application environment variables updated successfully."
-
