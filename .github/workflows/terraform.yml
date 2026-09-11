@@ -1,4 +1,3 @@
-
 name: Terraform Infrastructure
 
 on:
@@ -14,84 +13,91 @@ jobs:
     environment: terraform
 
     steps:
+
+     
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+    
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ vars.aws_account_id }}:role/TodoTerraformGitHubActionsRole
           aws-region: ${{ vars.aws_region }}
 
-      - name: Checkout code
-        uses: actions/checkout@v4
-
+   
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+     
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init
 
+      
       - name: Terraform Validate
         working-directory: ./terraform
         run: terraform validate
 
+   
       - name: Terraform Plan
         working-directory: ./terraform
         run: terraform plan -out=tfplan
 
+     
       - name: Terraform Apply
         working-directory: ./terraform
         run: terraform apply -auto-approve tfplan
 
       - name: Get Terraform Outputs
+        id: terraform_outputs
         working-directory: ./terraform
         run: |
           echo "frontend_bucket=$(terraform output -raw frontend_bucket_name)" >> "$GITHUB_OUTPUT"
           echo "backend_url=$(terraform output -raw alb_dns_name)" >> "$GITHUB_OUTPUT"
           echo "ecr_repository=$(terraform output -raw ecr_repository_url)" >> "$GITHUB_OUTPUT"
 
-      - name: Update Application Environment Variables
-        working-directory: ./terraform
+     
+      - name: Update Application Variables
         env:
-          GH_TOKEN: ${{ secrets.env_token }}
+          GH_TOKEN: ${{ secrets.GITHUP_ENV_TOKEN }}
+          FRONTEND_BUCKET: ${{ steps.terraform_outputs.outputs.frontend_bucket }}
+          BACKEND_URL: ${{ steps.terraform_outputs.outputs.backend_url }}
+          ECR_REPOSITORY: ${{ steps.terraform_outputs.outputs.ecr_repository }}
+
         run: |
-          FRONTEND_BUCKET=$(terraform output -raw frontend_bucket_name)
-          BACKEND_URL=$(terraform output -raw alb_dns_name)
-          ECR_REPOSITORY=$(terraform output -raw ecr_repository_url)
 
-          echo "Updating application environment variables..."
+          echo "Updating frontend_bucket..."
 
-          update_or_create_variable() {
-            NAME=$1
-            VALUE=$2
+          curl -L \
+            -X PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "https://api.github.com/repos/${{ github.repository }}/environments/application/variables/frontend_bucket" \
+            -d "{\"name\":\"frontend_bucket\",\"value\":\"$FRONTEND_BUCKET\"}"
 
-            if gh api \
-              --method PATCH \
-              -H "Accept: application/vnd.github+json" \
-              -H "X-GitHub-Api-Version: 2026-03-10" \
-              "/repos/${{ github.repository }}/environments/application/variables/$NAME" \
-              -f name="$NAME" \
-              -f value="$VALUE"; then
 
-              echo "$NAME updated successfully."
+          echo "Updating backend_url..."
 
-            else
+          curl -L \
+            -X PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "https://api.github.com/repos/${{ github.repository }}/environments/application/variables/backend_url" \
+            -d "{\"name\":\"backend_url\",\"value\":\"$BACKEND_URL\"}"
 
-              echo "$NAME does not exist. Creating it..."
 
-              gh api \
-                --method POST \
-                -H "Accept: application/vnd.github+json" \
-                -H "X-GitHub-Api-Version: 2026-03-10" \
-                "/repos/${{ github.repository }}/environments/application/variables" \
-                -f name="$NAME" \
-                -f value="$VALUE"
+          echo "Updating ecr_repository..."
 
-              echo "$NAME created successfully."
-            fi
-          }
+          curl -L \
+            -X PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "https://api.github.com/repos/${{ github.repository }}/environments/application/variables/ecr_repository" \
+            -d "{\"name\":\"ecr_repository\",\"value\":\"$ECR_REPOSITORY\"}"
 
-          update_or_create_variable "frontend_bucket" "$FRONTEND_BUCKET"
-          update_or_create_variable "backend_url" "$BACKEND_URL"
-          update_or_create_variable "ecr_repository" "$ECR_REPOSITORY"
 
           echo "Application environment variables updated successfully."
