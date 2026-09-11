@@ -1,9 +1,6 @@
 function toggleDark() {
     document.body.classList.toggle("dark");
 }
-
-const API = "http://127.0.0.1:8000";
-
 async function login() {
 
     const username = document.getElementById("username").value;
@@ -11,7 +8,7 @@ async function login() {
 
     try {
 
-        const res = await fetch("http://127.0.0.1:8000/login/", {
+        const res = await fetch("${API_URL}/login/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

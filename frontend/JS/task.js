@@ -1,4 +1,4 @@
-const API = "http://127.0.0.1:8000";
+
 
 /* ================= DARK MODE ================= */
 
@@ -28,7 +28,7 @@ async function getTasks() {
 
     try {
 
-        const res = await fetch(`${API}/tasks/`, {
+        const res = await fetch(`${API_URL}/tasks/`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${token}`
