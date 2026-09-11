@@ -1,3 +1,4 @@
+```yaml
 name: Terraform Infrastructure
 
 on:
@@ -41,3 +42,40 @@ jobs:
         working-directory: ./terraform
         run: terraform apply -auto-approve tfplan
 
+      - name: Update Application Environment Variables
+        working-directory: ./terraform
+        env:
+          GH_TOKEN: ${{ secrets.github_env_token }}
+        run: |
+          FRONTEND_BUCKET=$(terraform output -raw frontend_bucket_name)
+          BACKEND_URL=$(terraform output -raw alb_dns_name)
+          ECR_REPOSITORY=$(terraform output -raw ecr_repository_url)
+
+          echo "Updating application environment variables..."
+
+          gh api \
+            --method PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "/repos/${{ github.repository }}/environments/application/variables/FRONTEND_BUCKET" \
+            -f name="FRONTEND_BUCKET" \
+            -f value="$FRONTEND_BUCKET"
+
+          gh api \
+            --method PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "/repos/${{ github.repository }}/environments/application/variables/BACKEND_URL" \
+            -f name="BACKEND_URL" \
+            -f value="$BACKEND_URL"
+
+          gh api \
+            --method PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "/repos/${{ github.repository }}/environments/application/variables/ECR_REPOSITORY" \
+            -f name="ECR_REPOSITORY" \
+            -f value="$ECR_REPOSITORY"
+
+          echo "Application environment variables updated successfully."
+```
