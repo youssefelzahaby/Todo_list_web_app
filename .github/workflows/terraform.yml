@@ -45,7 +45,7 @@ jobs:
         run: terraform plan -out=tfplan
 
      
-      - name: Terraform Apply
+            - name: Terraform Apply
         working-directory: ./terraform
         run: terraform apply -auto-approve tfplan
 
@@ -57,7 +57,6 @@ jobs:
           echo "backend_url=$(terraform output -raw alb_dns_name)" >> "$GITHUB_OUTPUT"
           echo "ecr_repository=$(terraform output -raw ecr_repository_url)" >> "$GITHUB_OUTPUT"
 
-     
       - name: Update Application Variables
         env:
           GH_TOKEN: ${{ secrets.GITHUP_ENV_TOKEN }}
@@ -67,9 +66,22 @@ jobs:
 
         run: |
 
+          echo "========================================"
+          echo "Terraform Outputs"
+          echo "========================================"
+
+          echo "Frontend Bucket: $FRONTEND_BUCKET"
+          echo "Backend URL: $BACKEND_URL"
+          echo "ECR Repository: $ECR_REPOSITORY"
+
+          echo ""
+          echo "========================================"
+          echo "Updating GitHub Environment Variables"
+          echo "========================================"
+
           echo "Updating frontend_bucket..."
 
-          curl -L \
+          curl --fail-with-body \
             -X PUT \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GH_TOKEN" \
@@ -80,7 +92,7 @@ jobs:
 
           echo "Updating backend_url..."
 
-          curl -L \
+          curl --fail-with-body \
             -X PUT \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GH_TOKEN" \
@@ -91,7 +103,7 @@ jobs:
 
           echo "Updating ecr_repository..."
 
-          curl -L \
+          curl --fail-with-body \
             -X PUT \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GH_TOKEN" \
@@ -100,4 +112,7 @@ jobs:
             -d "{\"name\":\"ecr_repository\",\"value\":\"$ECR_REPOSITORY\"}"
 
 
-          echo "Application environment variables updated successfully."
+          echo ""
+          echo "========================================"
+          echo "All Application Variables Updated"
+          echo "========================================"
