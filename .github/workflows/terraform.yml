@@ -75,7 +75,7 @@ jobs:
           echo "Updating frontend_bucket..."
 
           curl --fail-with-body \
-            -X PUT \
+            -X PATCH \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "X-GitHub-Api-Version: 2026-03-10" \
@@ -85,7 +85,7 @@ jobs:
           echo "Updating backend_url..."
 
           curl --fail-with-body \
-            -X PUT \
+            -X PATCH \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "X-GitHub-Api-Version: 2026-03-10" \
@@ -95,7 +95,7 @@ jobs:
           echo "Updating ecr_repository..."
 
           curl --fail-with-body \
-            -X PUT \
+            -X PATCH \
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "X-GitHub-Api-Version: 2026-03-10" \
