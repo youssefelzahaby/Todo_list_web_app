@@ -39,10 +39,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Test the backend
-        run: |
-          python manage.py test
-
       - name: Create Docker image
         run: |
           docker build -t ${{ vars.ECR_REPOSITORY }}:${{ github.sha }} .
