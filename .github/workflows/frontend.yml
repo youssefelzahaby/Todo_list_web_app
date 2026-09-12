@@ -32,5 +32,5 @@ jobs:
         run: |
           aws s3 sync frontend/ s3://${{ vars.frontend_bucket }}/ --delete
 
-      echo "Frontend deployed to S3 bucket: ${{ vars.frontend_bucket }}"
+   
      
