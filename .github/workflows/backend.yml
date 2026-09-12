@@ -1,0 +1,56 @@
+name: Backend Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: application
+
+    permissions:
+      id-token: write
+      contents: read
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.aws_account_id }}:role/TodoApplicationGitHubActionsRole
+          aws-region: ${{ vars.aws_region }}
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Test the backend
+        run: |
+          python manage.py test
+
+      - name: Create Docker image
+        run: |
+          docker build -t ${{ vars.ECR_REPOSITORY }}:${{ github.sha }} .
+
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Push Docker image to Amazon ECR
+        run: |
+          docker push ${{ vars.ECR_REPOSITORY }}:${{ github.sha }}
+
