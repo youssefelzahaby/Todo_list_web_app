@@ -1,4 +1,5 @@
 resource "aws_ecr_repository" "todo_backend" {
+  force_delete = true
   name = "todo-backend"
 
   image_scanning_configuration {

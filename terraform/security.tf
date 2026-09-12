@@ -69,6 +69,19 @@ resource "aws_vpc_security_group_egress_rule" "EC2-SG_to_RDS-SG" {
   to_port = 3306
 }
 
+resource "aws_vpc_security_group_egress_rule" "EC2-SG_to_Internet_HTTPS" {
+
+  security_group_id = aws_security_group.EC2-SG.id
+
+  cidr_ipv4 = "0.0.0.0/0"
+
+  ip_protocol = "tcp"
+
+  from_port = 443
+  to_port   = 443
+
+}
+
 
 
 
