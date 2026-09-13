@@ -93,10 +93,52 @@ user_data = base64encode(<<-EOF
   # ==========================================
 
   DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    docker.io \
-    jq \
+    ca-certificates \
     curl \
+    gnupg \
+    jq \
     unzip
+
+
+  # ==========================================
+  # Add Docker official GPG key
+  # ==========================================
+
+  install -m 0755 -d /etc/apt/keyrings
+
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+    -o /etc/apt/keyrings/docker.asc
+
+  chmod a+r /etc/apt/keyrings/docker.asc
+
+
+  # ==========================================
+  # Add Docker official repository
+  # ==========================================
+
+  echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+    $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" \
+    > /etc/apt/sources.list.d/docker.list
+
+
+  # ==========================================
+  # Update package lists
+  # ==========================================
+
+  apt-get update -y
+
+
+  # ==========================================
+  # Install Docker Engine
+  # ==========================================
+
+  DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    docker-ce \
+    docker-ce-cli \
+    containerd.io \
+    docker-buildx-plugin \
+    docker-compose-plugin
 
 
   # ==========================================
