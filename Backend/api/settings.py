@@ -26,8 +26,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
-
+ALLOWED_HOSTS = [
+    os.getenv("BACKEND_URL").replace("http://", "").replace("https://", "")
+]
 
 CORS_ALLOWED_ORIGINS = [
     os.getenv("FRONTEND_WEBSITE_URL")
