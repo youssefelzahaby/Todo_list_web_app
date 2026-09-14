@@ -12,3 +12,7 @@ output "ecr_repository_url" {
 output "secret_arn" {
   value = aws_secretsmanager_secret.backend_credentials.arn
 }
+
+output "frontend_website_url" {
+  value = "http://${aws_s3_bucket.frontend.bucket}.s3-website-${data.aws_region.current.name}.amazonaws.com"
+}

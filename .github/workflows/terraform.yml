@@ -58,6 +58,7 @@ jobs:
           BACKEND_URL: ${{ steps.terraform_outputs.outputs.backend_url }}
           ECR_REPOSITORY: ${{ steps.terraform_outputs.outputs.ecr_repository }}
           SECRET_ARN: ${{ steps.terraform_outputs.outputs.secret_arn }}
+          FRONTEND_WEBSITE_URL: ${{ steps.terraform_outputs.outputs.frontend_website_url }}
 
         run: |
 
@@ -69,6 +70,7 @@ jobs:
           echo "Backend URL: $BACKEND_URL"
           echo "ECR Repository: $ECR_REPOSITORY"
           echo "Secret ARN: $SECRET_ARN"
+          echo "Frontend Website URL: $FRONTEND_WEBSITE_URL"
 
           echo ""
           echo "========================================"
@@ -115,7 +117,14 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/environments/application/variables/secret_arn" \
             -d "{\"name\":\"secret_arn\",\"value\":\"$SECRET_ARN\"}"
 
-    
+          echo "Updating frontend_website_url..."
+          curl --fail-with-body \
+            -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "https://api.github.com/repos/${{ github.repository }}/environments/application/variables/frontend_website_url" \
+            -d "{\"name\":\"frontend_website_url\",\"value\":\"$FRONTEND_WEBSITE_URL\"}"          
 
           echo ""
           echo "========================================"
