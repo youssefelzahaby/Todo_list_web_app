@@ -204,7 +204,7 @@ jobs:
               "DB_PORT=$(echo \"$SECRET\" | jq -r '\''.DB_PORT'\'')",
               "SECRET_KEY=$(echo \"$SECRET\" | jq -r '\''.SECRET_KEY'\'')",
               "FRONTEND_WEBSITE_URL=\"${{ vars.frontend_website_url }}\"",
-              "docker run --rm -e DB_NAME=\"$DB_NAME\" -e DB_USER=\"$DB_USER\" -e DB_PASSWORD=\"$DB_PASSWORD\" -e DB_HOST=\"$DB_HOST\" -e DB_PORT=\"$DB_PORT\" -e SECRET_KEY=\"$SECRET_KEY\" -e FRONTEND_WEBSITE_URL=\"$FRONTEND_WEBSITE_URL\" \"$IMAGE\" python manage.py migrate"             ]' \
+            "docker run --rm -e DB_NAME=\"$DB_NAME\" -e DB_USER=\"$DB_USER\" -e DB_PASSWORD=\"$DB_PASSWORD\" -e DB_HOST=\"$DB_HOST\" -e DB_PORT=\"$DB_PORT\" -e SECRET_KEY=\"$SECRET_KEY\" -e FRONTEND_WEBSITE_URL=\"$FRONTEND_WEBSITE_URL\" \"$IMAGE\" python manage.py migrate"             ]' \
             --query 'Command.CommandId' \
             --output text)
 
@@ -283,6 +283,5 @@ jobs:
               "docker stop todo-backend || true",
               "docker rm todo-backend || true",
 
-              "docker run --rm -e DB_NAME=\"$DB_NAME\" -e DB_USER=\"$DB_USER\" -e DB_PASSWORD=\"$DB_PASSWORD\" -e DB_HOST=\"$DB_HOST\" -e DB_PORT=\"$DB_PORT\" -e SECRET_KEY=\"$SECRET_KEY\" -e FRONTEND_WEBSITE_URL=\"$FRONTEND_WEBSITE_URL\" \"$IMAGE\" python manage.py migrate"             ]' \
-            ]'
+              "docker run -d --name todo-backend -p 80:8000 -e DB_NAME=\"$DB_NAME\" -e DB_USER=\"$DB_USER\" -e DB_PASSWORD=\"$DB_PASSWORD\" -e DB_HOST=\"$DB_HOST\" -e DB_PORT=\"$DB_PORT\" -e SECRET_KEY=\"$SECRET_KEY\" -e FRONTEND_WEBSITE_URL=\"${{ vars.frontend_website_url }}\" \"$IMAGE\""            ]'
 
