@@ -203,8 +203,8 @@ jobs:
               "DB_HOST=$(echo \"$SECRET\" | jq -r '\''.DB_HOST'\'')",
               "DB_PORT=$(echo \"$SECRET\" | jq -r '\''.DB_PORT'\'')",
               "SECRET_KEY=$(echo \"$SECRET\" | jq -r '\''.SECRET_KEY'\'')",
-              "docker run --rm -e DB_NAME=\"$DB_NAME\" -e DB_USER=\"$DB_USER\" -e DB_PASSWORD=\"$DB_PASSWORD\" -e DB_HOST=\"$DB_HOST\" -e DB_PORT=\"$DB_PORT\" -e SECRET_KEY=\"$SECRET_KEY\" \"$IMAGE\" python manage.py migrate"
-            ]' \
+              "FRONTEND_WEBSITE_URL=\"${{ vars.frontend_website_url }}\"",
+              "docker run --rm -e DB_NAME=\"$DB_NAME\" -e DB_USER=\"$DB_USER\" -e DB_PASSWORD=\"$DB_PASSWORD\" -e DB_HOST=\"$DB_HOST\" -e DB_PORT=\"$DB_PORT\" -e SECRET_KEY=\"$SECRET_KEY\" -e FRONTEND_WEBSITE_URL=\"$FRONTEND_WEBSITE_URL\" \"$IMAGE\" python manage.py migrate"             ]' \
             --query 'Command.CommandId' \
             --output text)
 
