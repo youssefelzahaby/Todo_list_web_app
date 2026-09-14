@@ -24,9 +24,9 @@ jobs:
           role-to-assume: arn:aws:iam::${{ vars.aws_account_id }}:role/TodoApplicationGitHubActionsRole
           aws-region: ${{ vars.aws_region }}
 
-      - name: Generate config.js
+      - name: Create config.js
         run: |
-          echo "const API_URL = '${{ vars.backend_url }}';" > frontend/config.js
+          echo "const API_URL = 'http://${{ vars.BACKEND_URL }}';" > frontend/config.js
 
       - name: Deploy frontend to S3
         run: |
