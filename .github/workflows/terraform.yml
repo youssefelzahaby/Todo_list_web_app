@@ -56,6 +56,7 @@ jobs:
           FRONTEND_BUCKET: ${{ steps.terraform_outputs.outputs.frontend_bucket }}
           BACKEND_URL: ${{ steps.terraform_outputs.outputs.backend_url }}
           ECR_REPOSITORY: ${{ steps.terraform_outputs.outputs.ecr_repository }}
+          SECRET_ARN: ${{ steps.terraform_outputs.outputs.secret_arn }}
 
         run: |
 
@@ -66,6 +67,7 @@ jobs:
           echo "Frontend Bucket: $FRONTEND_BUCKET"
           echo "Backend URL: $BACKEND_URL"
           echo "ECR Repository: $ECR_REPOSITORY"
+          echo "Secret ARN: $SECRET_ARN"
 
           echo ""
           echo "========================================"
@@ -102,6 +104,18 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/environments/application/variables/ecr_repository" \
             -d "{\"name\":\"ecr_repository\",\"value\":\"$ECR_REPOSITORY\"}"
 
+          echo "Updating secret_arn..."
+
+          curl --fail-with-body \
+            -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            "https://api.github.com/repos/${{ github.repository }}/environments/application/variables/secret_arn" \
+            -d "{\"name\":\"secret_arn\",\"value\":\"$SECRET_ARN\"}"
+
+    
+            
           echo ""
           echo "========================================"
           echo "All Application Variables Updated"
