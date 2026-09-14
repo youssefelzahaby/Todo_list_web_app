@@ -89,7 +89,7 @@ async function addTask() {
 
     try {
 
-        const res = await fetch(`${API}/tasks/create/`, {
+        const res = await fetch(`${API_URL}/tasks/create/`, {
 
             method: "POST",
 
@@ -145,7 +145,7 @@ async function deleteTask(id) {
     try {
 
         const res = await fetch(
-            `${API}/tasks/delete/${id}/`,
+            `${API_URL}/tasks/delete/${id}/`,
             {
                 method: "DELETE",
 
