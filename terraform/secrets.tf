@@ -27,7 +27,7 @@ resource "aws_secretsmanager_secret" "backend_credentials" {
   name                    = "backend-credentials"
   description             = "Backend application credentials"
   recovery_window_in_days = 0
-
+  
   tags = {
     Name = "backend-credentials"
   }

@@ -49,6 +49,7 @@ jobs:
           echo "frontend_bucket=$(terraform output -raw frontend_bucket_name)" >> "$GITHUB_OUTPUT"
           echo "backend_url=$(terraform output -raw alb_dns_name)" >> "$GITHUB_OUTPUT"
           echo "ecr_repository=$(terraform output -raw ecr_repository_url)" >> "$GITHUB_OUTPUT"
+          echo "secret_arn=$(terraform output -raw secret_arn)" >> "$GITHUB_OUTPUT"
 
       - name: Update Application Variables
         env:
@@ -115,7 +116,7 @@ jobs:
             -d "{\"name\":\"secret_arn\",\"value\":\"$SECRET_ARN\"}"
 
     
-            
+
           echo ""
           echo "========================================"
           echo "All Application Variables Updated"

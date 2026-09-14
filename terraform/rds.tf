@@ -53,4 +53,5 @@ resource "aws_db_instance" "todo_rds" {
   tags = {
     Name = "todo-rds"
   }
+
 }
