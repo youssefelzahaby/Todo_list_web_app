@@ -24,7 +24,7 @@ A full-stack Todo application built with **Django REST Framework** and **Vanilla
 
 This project started as a simple **Full-Stack Web Application** and evolved into a hands-on **DevOps & AWS project**.
 
-The main goal was to take a working application and build a complete cloud environment around it using:
+The goal was to take a working application and build a production-oriented cloud environment around it using:
 
 **Docker → Terraform → AWS → CI/CD → Security → Scalability**
 
@@ -47,59 +47,29 @@ The main goal was to take a working application and build a complete cloud envir
 
 # 🏗️ AWS Architecture
 
-```text
-                           ┌──────────────┐
-                           │    Browser   │
-                           └──────┬───────┘
-                                  │
-                    ┌─────────────┴─────────────┐
-                    │                           │
-                    ▼                           ▼
-             ┌─────────────┐             ┌─────────────┐
-             │  Amazon S3  │             │   AWS WAF   │
-             │  Frontend   │             └──────┬──────┘
-             └─────────────┘                    │
-                                                ▼
-                                         ┌─────────────┐
-                                         │     ALB     │
-                                         └──────┬──────┘
-                                                │
-                                                ▼
-                                      ┌─────────────────┐
-                                      │ Auto Scaling    │
-                                      │      Group      │
-                                      └────────┬────────┘
-                                               │
-                                    ┌──────────┴──────────┐
-                                    │                     │
-                              ┌─────▼─────┐         ┌─────▼─────┐
-                              │   EC2     │         │   EC2     │
-                              │  Docker   │         │  Docker   │
-                              │  Django   │         │  Django   │
-                              └─────┬─────┘         └─────┬─────┘
-                                    │                     │
-                                    └──────────┬──────────┘
-                                               ▼
-                                        ┌─────────────┐
-                                        │ RDS MySQL   │
-                                        └─────────────┘
+<p align="center">
+  <img src="docs/aws-architecture.png" alt="AWS Architecture" width="950">
+</p>
 
-         ┌──────────────────────────────────────────────────┐
-         │                 Supporting Services               │
-         │                                                  │
-         │  ECR  ← Docker Images                           │
-         │  Secrets Manager ← Application Secrets          │
-         │  SSM ← Remote Deployment & Management           │
-         └──────────────────────────────────────────────────┘
-```
+The infrastructure is built around a multi-layer AWS architecture:
 
-> **Note:** CloudFront is not currently part of the deployment. It is planned for a future improvement after AWS account verification.
+* **Amazon S3** hosts the frontend.
+* **Application Load Balancer** distributes backend traffic.
+* **Auto Scaling Group** runs multiple EC2 instances.
+* **Docker** runs the Django application.
+* **Amazon RDS MySQL** provides the database layer.
+* **AWS WAF** protects the application entry point.
+* **Amazon ECR** stores Docker images.
+* **AWS SSM** is used for remote management and deployment.
+* **AWS Secrets Manager** stores application and database secrets.
+
+> **Note:** CloudFront is planned as a future improvement after AWS account verification.
 
 ---
 
 # 🛠️ Technology Stack
 
-### 🎨 Frontend
+## 🎨 Frontend
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square\&logo=html5\&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square\&logo=css3\&logoColor=white)
@@ -111,7 +81,7 @@ The main goal was to take a working application and build a complete cloud envir
 * Fetch API
 * JWT token handling
 
-### ⚙️ Backend
+## ⚙️ Backend
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square\&logo=python\&logoColor=white)
 ![Django](https://img.shields.io/badge/Django-092E20?style=flat-square\&logo=django\&logoColor=white)
@@ -123,32 +93,21 @@ The main goal was to take a working application and build a complete cloud envir
 * JWT Authentication
 * MySQL
 
-### ☁️ AWS
-
-![Amazon S3](https://img.shields.io/badge/Amazon_S3-569A31?style=flat-square\&logo=amazon-s3\&logoColor=white)
-![EC2](https://img.shields.io/badge/Amazon_EC2-FF9900?style=flat-square\&logo=amazon-ec2\&logoColor=white)
-![RDS](https://img.shields.io/badge/Amazon_RDS-527FFF?style=flat-square\&logo=amazon-rds\&logoColor=white)
-![ECR](https://img.shields.io/badge/Amazon_ECR-FF9900?style=flat-square\&logo=amazon-aws\&logoColor=white)
-![WAF](https://img.shields.io/badge/AWS_WAF-8C4FFF?style=flat-square\&logo=amazon-aws\&logoColor=white)
-![IAM](https://img.shields.io/badge/AWS_IAM-DD344C?style=flat-square\&logo=amazon-aws\&logoColor=white)
+## ☁️ AWS
 
 **Services used:**
 
 `VPC` · `EC2` · `S3` · `RDS` · `ECR` · `ALB` · `ASG` · `WAF` · `IAM` · `SSM` · `Secrets Manager` · `CloudWatch`
 
-### 🔧 DevOps
+## 🔧 DevOps
 
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square\&logo=docker\&logoColor=white)
-![Terraform](https://img.shields.io/badge/Terraform-844FBA?style=flat-square\&logo=terraform\&logoColor=white)
-![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square\&logo=github-actions\&logoColor=white)
-
-* Docker
-* Terraform
-* GitHub Actions
-* AWS OIDC
-* CI/CD
-* Infrastructure as Code
-* Remote deployment with SSM
+* 🐳 Docker
+* 🏗️ Terraform
+* 🔄 GitHub Actions
+* 🔐 AWS OIDC
+* 🔁 CI/CD
+* 📦 Infrastructure as Code
+* 🖥️ Remote deployment with SSM
 
 ---
 
@@ -156,45 +115,30 @@ The main goal was to take a working application and build a complete cloud envir
 
 ### Backend Deployment
 
+<p align="center">
+  <img src="docs/backend-cicd.png" alt="Backend CI/CD Pipeline" width="900">
+</p>
+
+The deployment flow is:
+
 ```text
-        Git Push
-           │
-           ▼
-   ┌─────────────────┐
-   │ GitHub Actions  │
-   └────────┬────────┘
-            │
-            │ OIDC
-            ▼
-       ┌──────────┐
-       │ AWS IAM  │
-       └────┬─────┘
-            │
-            ▼
-     ┌──────────────┐
-     │ Docker Build │
-     └──────┬───────┘
-            │
-            ▼
-      ┌──────────┐
-      │   ECR    │
-      └────┬─────┘
-           │
-           ▼
-      ┌──────────┐
-      │   SSM    │
-      └────┬─────┘
-           │
-           ▼
-     ┌──────────────┐
-     │ EC2 Instances│
-     └──────┬───────┘
-            │
-            ▼
-    Django Migrations
-            │
-            ▼
-      New Container
+Git Push
+   ↓
+GitHub Actions
+   ↓
+AWS OIDC
+   ↓
+Docker Build
+   ↓
+Amazon ECR
+   ↓
+AWS SSM
+   ↓
+EC2 Instances
+   ↓
+Django Migrations
+   ↓
+New Container
 ```
 
 The Docker image is tagged using the **Git commit SHA**, allowing each deployment to reference a specific version of the application.
@@ -218,7 +162,7 @@ The infrastructure was designed with security in mind:
 
 # 🏗️ Infrastructure as Code
 
-The entire AWS infrastructure is managed through **Terraform**.
+The AWS infrastructure is managed through **Terraform**.
 
 ```text
 terraform/
@@ -262,6 +206,10 @@ Todo_list_web_app/
 │   └── Dockerfile
 │
 ├── terraform/
+│
+├── docs/
+│   ├── aws-architecture.png
+│   └── backend-cicd.png
 │
 └── .github/
     └── workflows/
