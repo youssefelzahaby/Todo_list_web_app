@@ -115,10 +115,6 @@ The infrastructure is built around a multi-layer AWS architecture:
 
 ### Backend Deployment
 
-<p align="center">
-  <img src="docs/backend-cicd.png" alt="Backend CI/CD Pipeline" width="900">
-</p>
-
 The deployment flow is:
 
 ```text
