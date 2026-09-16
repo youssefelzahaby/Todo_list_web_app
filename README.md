@@ -266,6 +266,10 @@ Monitoring & Security
 
 **DevOps / Cloud Engineering Journey**
 
+📧 **Email:** [yousefdahaby110@gmail.com](mailto:yousefdahaby110@gmail.com)
+💼 **LinkedIn:** [Yousef Elzahaby](https://www.linkedin.com/in/yousefelzahaby/)
+
 ⭐ If you find this project useful, feel free to explore the repository.
 
 </div>
+
