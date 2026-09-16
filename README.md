@@ -48,7 +48,7 @@ The goal was to take a working application and build a production-oriented cloud
 # 🏗️ AWS Architecture
 
 <p align="center">
-  <img src="docs/aws-architecture.png" alt="AWS Architecture" width="950">
+  <img src="docs/architecture.png" alt="AWS Architecture" width="950">
 </p>
 
 The infrastructure is built around a multi-layer AWS architecture:
